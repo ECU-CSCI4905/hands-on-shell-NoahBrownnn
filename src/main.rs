@@ -18,7 +18,8 @@ fn main() {
     println!("The env var PATH is {current_path}");
 
     loop {
-        print!("my shell > ");
+        let current_dir = env::current_dir().unwrap();
+        print!("my shell [{}] > ", current_dir.display());
         let _ = io::stdout().flush();
 
         let mut input = String::new();
@@ -59,6 +60,16 @@ fn main() {
                 }
 
                 "exit" => return,
+
+                "greet" => {
+                    let name = args.first().unwrap_or(&"");
+                    if name.is_empty() {
+                        println!("Usage: greet <name>");
+                    } else {
+                        println!("Hello, {}!", name);
+                    }
+                    previous_command = None;
+                }
 
                 command => {
                     // Set up stdin from previous command (if piped)
